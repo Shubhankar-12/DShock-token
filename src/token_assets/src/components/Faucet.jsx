@@ -1,25 +1,15 @@
 import React, { useState } from "react";
-import { token, canisterId, createActor } from "../../../declarations/token";
-import { AuthClient } from "@dfinity/auth-client";
+import { token } from "../../../declarations/token";
 
-function Faucet() {
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [payText, setPayText] = useState("Gimme gimme");
+function Faucet(props) {
+  const [isDisabled, setDisable] = useState(false);
+  const [buttonText, setText] = useState("Gimme gimme");
 
   async function handleClick(event) {
-    const authClient = await AuthClient.create();
-    const identity = await AuthClient.getIdentity();
-
-    const authenticatedCanister = createActor(canisterId, {
-      agentOptions: {
-        identity,
-      },
-    });
-
-    setIsDisabled(true);
-    const btnTxt = await token.authenticatedCanister.payOut();
-    setPayText(btnTxt);
-    // setIsDisabled(false);
+    setDisable(true);
+    const result = await token.payOut();
+    console.log("payout: " + result);
+    setText(result);
   }
 
   return (
@@ -31,12 +21,11 @@ function Faucet() {
         Faucet
       </h2>
       <label>
-        Get your free DShock tokens here! Claim 10,000 DSH tokens to your
-        account.
+        Get your free DShock tokens here! Claim 10,000 DSH tokens to 2vxsx-fae
       </label>
       <p className="trade-buttons">
         <button id="btn-payout" onClick={handleClick} disabled={isDisabled}>
-          {payText}
+          {buttonText}
         </button>
       </p>
     </div>
